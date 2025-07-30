@@ -1,8 +1,0 @@
-stages:       # перечисление этапов
-  - test      # название этапа
-
-test_job:     # название джобы
-  stage: test # к какому этапу относится джоба
-  runs-on: self-hosted
-  script:     # скрипт выполнения - проверка наличия nginx и вывод его версии
-    - which nginx && nginx -v
