@@ -3,12 +3,13 @@ stages:       # перечисление этапов
 
 on: push
 
-test_job:     # название джобы
-  stage: test # к какому этапу относится джоба
-  runs-on: ubuntu-24.04
-  steps:
-    - name: nginx
-      run: which nginx && nginx -v
+jobs:
+  test_job:     # название джобы
+    stage: test # к какому этапу относится джоба
+    runs-on: ubuntu-24.04
+    steps:
+      - name: nginx
+        run: which nginx && nginx -v
 
 # test_job:     # название джобы
 #   stage: test # к какому этапу относится джоба
