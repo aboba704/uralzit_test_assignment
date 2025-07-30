@@ -7,7 +7,7 @@ on: push
 
 jobs:
   test_job:     # название джобы
-    stage: test # к какому этапу относится джоба
+    # stage: test # к какому этапу относится джоба
     runs-on: ubuntu-24.04
     steps:
       - name: nginx
