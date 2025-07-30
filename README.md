@@ -40,19 +40,77 @@
 - Ожидаемый результат:
 - Корректный файл .gitlab-ci.yml с минимальным пайплайном
 
-gitlab-ci.yml:
-```yml
-stages:
-  - test
-
-test_job:
-  stage: test
-  script:
-    - which nginx && nginx -v
-```
-
 - Комментарии внутри объясняют, что делает каждая стадия
 
-Для запуска пайплайна развернул еще одну машину github-runner. 
+gitlab-ci.yml:
+```yml
+stages:         # перечисление этапов
+  - test        # название этапа
+
+jobs:
+  test_job:     # название джобы
+    stage: test # к какому этапу относится джоба
+    script:     # скрипт выполнения - проверка наличия nginx и вывод его версии
+      - which nginx && nginx -v
+```
+
+Дополнительно запустил пайплайн на раннере:
+
+Для запуска пайплайна развернул еще одну машину - github-runner. 
 
 В интерфейсе GitHub -> Settings -> Actions -> Runners - добавил нового раннера по их инструкции. 
+
+.github/workflows/gitlab-ci.yml:
+```yml
+name: test  # название github workflow
+
+on: push    # триггер запуска пайплайна - при пуше в удаленный репозиторий в любую ветку
+
+jobs:
+  test_job:
+    runs-on: self-hosted # запуск на определенной машине, в моем случае - машина с gitlab-runner
+    steps:
+      - name: nginx
+        run: which nginx && nginx -v
+```
+
+Пайплан фейлится, если на машине не установлен nginx:
+
+<img src="misc/img/2-1.png" width="400"/>
+
+После этого я установил nginx на машине раннера, заново запустил actions-runner и зареранил пайплайн:
+
+<img src="misc/img/2-2.png" width="400"/>
+
+## 3. Работа с Docker (по желанию, но желательно):
+- Напишите Dockerfile, который собирает образ с nginx и выводит “Hello from DevOps!” на главной странице
+
+```Dockerfile
+FROM nginx:latest
+
+COPY index.html /usr/share/nginx/html/index.html
+```
+
+index.html: (страничка вместо по умолчанию в nginx)
+```html
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>Hello from DevOps!</h1>
+</body>
+
+</html>
+```
+
+- Ожидаемый результат:
+- Рабочий Dockerfile
+- Контейнер поднимается и отвечает на curl localhost или через браузер
+
+Пишу в консоль:
+```
+docker build -t nginx .
+docker run -d -p 80:80 nginx
+```
+
+<img src="misc/img/3-1.png" width="500"/>
