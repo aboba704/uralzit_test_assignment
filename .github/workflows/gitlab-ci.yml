@@ -1,20 +1,20 @@
 # stages:       # перечисление этапов
 #   - test      # название этапа
 
+# jobs:
+#   test_job:     # название джобы
+#     stage: test # к какому этапу относится джоба
+#     script:     # скрипт выполнения - проверка наличия nginx и вывод его версии
+#       - which nginx && nginx -v
+
+
 name: test
 
 on: push
 
 jobs:
-  test_job:     # название джобы
-    # stage: test # к какому этапу относится джоба
-    runs-on: ubuntu-24.04
+  test_job:
+    runs-on: self-hosted
     steps:
       - name: nginx
         run: which nginx && nginx -v
-
-# test_job:     # название джобы
-#   stage: test # к какому этапу относится джоба
-#   runs-on: self-hosted
-#   script:     # скрипт выполнения - проверка наличия nginx и вывод его версии
-#     - which nginx && nginx -v
