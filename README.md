@@ -16,15 +16,15 @@
 
 `sudo systemctl enable nginx`
 
-<img src="misc/img/1-2.png" width="600"/>
+<img src="misc/img/1-3.png" width="600"/>
 
 - Ожидаемый результат:
 
-- Nginx работает
+- - Nginx работает
 
-<img src="misc/img/1-3.png" width="600"/>
+<img src="misc/img/1-2.png" width="600"/>
 
-- systemctl status nginx показывает активное состояние
+- - `systemctl status nginx` показывает активное состояние
 
 <img src="misc/img/1-4.png" width="600"/>
 
@@ -32,15 +32,11 @@
 
 - Сценарий:
 - Этап test должен запускать проверку наличия установленного nginx:
-- - bash
-- - Copy
-- - Edit
 - - which nginx && nginx -v
 
 - Ожидаемый результат:
-- Корректный файл .gitlab-ci.yml с минимальным пайплайном
-
-- Комментарии внутри объясняют, что делает каждая стадия
+- - Корректный файл .gitlab-ci.yml с минимальным пайплайном
+- - Комментарии внутри объясняют, что делает каждая стадия
 
 gitlab-ci.yml:
 ```yml
@@ -56,11 +52,11 @@ jobs:
 
 Дополнительно запустил пайплайн на раннере:
 
-Для запуска пайплайна развернул еще одну машину - github-runner. 
+Для запуска пайплайна развернул еще одну машину - gitlab-runner. 
 
 В интерфейсе GitHub -> Settings -> Actions -> Runners - добавил нового раннера по их инструкции. 
 
-.github/workflows/gitlab-ci.yml:
+.github/workflows/github-ci.yml:
 ```yml
 name: test  # название github workflow
 
@@ -74,7 +70,7 @@ jobs:
         run: which nginx && nginx -v
 ```
 
-Пайплан фейлится, если на машине не установлен nginx:
+Пайплайн фейлится, если на машине не установлен nginx:
 
 <img src="misc/img/2-1.png" width="400"/>
 
@@ -82,8 +78,10 @@ jobs:
 
 <img src="misc/img/2-2.png" width="400"/>
 
-## 3. Работа с Docker (по желанию, но желательно):
-- Напишите Dockerfile, который собирает образ с nginx и выводит “Hello from DevOps!” на главной странице
+## 3. Работа с Docker:
+- Напишите Dockerfile, который собирает образ с nginx и выводит "Hello from DevOps!" на главной странице
+
+Заменяю стандартную страничку nginx на свою (index.html) с нужным заголовком
 
 ```Dockerfile
 FROM nginx:latest
@@ -91,7 +89,7 @@ FROM nginx:latest
 COPY index.html /usr/share/nginx/html/index.html
 ```
 
-index.html: (страничка вместо по умолчанию в nginx)
+index.html:
 ```html
 <!DOCTYPE html>
 <html>
@@ -114,3 +112,65 @@ docker run -d -p 80:80 nginx
 ```
 
 <img src="misc/img/3-1.png" width="500"/>
+
+## 4. Мини-задание по YAML / Kubernetes:
+
+- Напишите простейший deployment.yaml, который запускает nginx в 1 реплике
+
+- Ожидаемый результат:
+- - Корректный YAML-файл, описывающий Deployment
+- - Используется nginx:stable
+- - Указаны replicas, containers, ports
+
+deployment.yaml:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1                 # количество подов
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable   # образ контейнера
+        ports:
+        - containerPort: 80   # порт контейнера, который будет открыт
+```
+
+Применяю конфигурацию командой:
+
+`kubectl apply -f deployment.yaml`
+
+Смотрю ip адрес пода и обращаюсь к ему по 80 порту:
+
+<img src="misc/img/4-1.png" width="800"/>
+
+5. Ответьте письменно на 3 вопроса:
+
+- Чем отличается `apt update` от `apt upgrade`?
+
+Ответ: `apt update` обновляет пакетный менеджер, а `apt upgrade` - установленные пакеты 
+
+- Как вы проверите, слушает ли сервис нужный порт?
+
+Ответ: `lsof -i :<port>`
+
+- Какие команды вы используете для диагностики сетевых проблем?
+
+Ответ: 
+
+`ip a` - для вывода сетевых интерфейсов
+
+`ip r` - для вывода таблицы маршрутизации
+
+`arp -a` - вывод arp таблицы
+
+`ping <address>` - для проверки доступности сервера

@@ -1,21 +1,10 @@
-stages:       # перечисление этапов
-  - test      # название этапа
+name: test  # название github workflow
+
+on: push    # триггер запуска пайплайна - при пуше в удаленный репозиторий в любую ветку
 
 jobs:
-  test_job:     # название джобы
-    stage: test # к какому этапу относится джоба
-    script:     # скрипт выполнения - проверка наличия nginx и вывод его версии
-      - which nginx && nginx -v
-
-# --- FOR GITHUB :
-
-# name: test  # название github workflow
-
-# on: push    # триггер запуска пайплайна - при пуше в удаленный репозиторий в любую ветку
-
-# jobs:
-#   test_job:
-#     runs-on: self-hosted # запуск на определенной машине, в моем случае - машина с gitlab-runner
-#     steps:
-#       - name: nginx
-#         run: which nginx && nginx -v
+  test_job:
+    runs-on: self-hosted # запуск на определенной машине, в моем случае - машина с gitlab-runner
+    steps:
+      - name: nginx
+        run: which nginx && nginx -v
