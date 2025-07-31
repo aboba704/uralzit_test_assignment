@@ -38,7 +38,7 @@
 - - Корректный файл .gitlab-ci.yml с минимальным пайплайном
 - - Комментарии внутри объясняют, что делает каждая стадия
 
-gitlab-ci.yml:
+![gitlab-ci.yml](gitlab-ci.yml):
 ```yml
 stages:         # перечисление этапов
   - test        # название этапа
@@ -56,7 +56,7 @@ jobs:
 
 В интерфейсе GitHub -> Settings -> Actions -> Runners - добавил нового раннера по их инструкции. 
 
-.github/workflows/github-ci.yml:
+![.github/workflows/github-ci.yml](.github/workflows/gitlab-ci.yml):
 ```yml
 name: test  # название github workflow
 
@@ -83,13 +83,14 @@ jobs:
 
 Заменяю стандартную страничку nginx на свою (index.html) с нужным заголовком
 
+![Dockerfile](Dockerfile)
 ```Dockerfile
 FROM nginx:latest
 
 COPY index.html /usr/share/nginx/html/index.html
 ```
 
-index.html:
+![index.html](index.html):
 ```html
 <!DOCTYPE html>
 <html>
@@ -102,8 +103,8 @@ index.html:
 ```
 
 - Ожидаемый результат:
-- Рабочий Dockerfile
-- Контейнер поднимается и отвечает на curl localhost или через браузер
+- - Рабочий Dockerfile
+- - Контейнер поднимается и отвечает на curl localhost или через браузер
 
 Пишу в консоль:
 ```
@@ -122,7 +123,7 @@ docker run -d -p 80:80 nginx
 - - Используется nginx:stable
 - - Указаны replicas, containers, ports
 
-deployment.yaml:
+![deployment.yaml](deployment.yaml):
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
